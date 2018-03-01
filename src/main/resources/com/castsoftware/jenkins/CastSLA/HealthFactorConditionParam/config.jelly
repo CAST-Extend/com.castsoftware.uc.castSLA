@@ -1,0 +1,22 @@
+<?jelly escape-by-default='true'?>    
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+   <div>
+	<f:entry title="Metric" field="metric">
+	  <f:select />
+	</f:entry>
+	  
+	<f:entry title="Operator" field="operator">
+	  <f:select />
+	</f:entry>
+	  
+	<f:entry title="Value/Tolerance" field="value">
+	  <f:number default="0.0"/>
+	</f:entry>
+  </div>
+	  
+  <div align="right"> 
+  	<f:repeatableDeleteButton value="Delete Condition"/> 
+  </div>
+  
+</j:jelly>
