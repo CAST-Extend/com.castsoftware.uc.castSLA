@@ -1,18 +1,5 @@
 package com.castsoftware.jenkins.CastSLA;
 
-import hudson.Extension;
-import hudson.Launcher;
-import hudson.model.BuildListener;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Item;
-import hudson.security.ACL;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Builder;
-import hudson.util.FormValidation;
-import hudson.util.ListBoxModel;
-import jenkins.model.Jenkins;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,9 +10,6 @@ import java.util.List;
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
-import net.sf.json.JSONObject;
-
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -37,7 +21,6 @@ import com.castsoftware.restapi.pojo.Aad;
 import com.castsoftware.restapi.pojo.Application;
 import com.castsoftware.restapi.pojo.ApplicationResult;
 import com.castsoftware.restapi.pojo.Metric;
-import com.cloudbees.plugins.credentials.Credentials;
 import com.cloudbees.plugins.credentials.CredentialsMatchers;
 import com.cloudbees.plugins.credentials.CredentialsProvider;
 import com.cloudbees.plugins.credentials.common.StandardCredentials;
@@ -45,6 +28,19 @@ import com.cloudbees.plugins.credentials.common.StandardListBoxModel;
 import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
 import com.cloudbees.plugins.credentials.domains.DomainRequirement;
 import com.cloudbees.plugins.credentials.domains.URIRequirementBuilder;
+
+import hudson.Extension;
+import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
+import hudson.model.Item;
+import hudson.security.ACL;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.Builder;
+import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
+import net.sf.json.JSONObject;
 
 public class CastRestAPIBuilder extends Builder {
 
@@ -63,7 +59,8 @@ public class CastRestAPIBuilder extends Builder {
 	// "DataBoundConstructor"
 	@DataBoundConstructor
 	public CastRestAPIBuilder(String restUrl, String credentialsId, String aad, String appId, String metricFromList,
-			String metricIds, List<HealthFactorConditionParam> healthFactorConditionParams, boolean failJob, boolean debugMode) {
+			String metricIds, List<HealthFactorConditionParam> healthFactorConditionParams, boolean failJob,
+			boolean debugMode) {
 		this.restUrl = restUrl;
 		this.credentialsId = credentialsId;
 		this.aad = aad;
@@ -120,9 +117,9 @@ public class CastRestAPIBuilder extends Builder {
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
 		boolean validateBuild = true;
-		CastRest.listener=listener;
-		CastRest.debugMode=debugMode;
-		
+		CastRest.listener = listener;
+		CastRest.debugMode = debugMode;
+
 		listener.getLogger().println(String.format("Cast Rest API Url: %s", restUrl));
 		StandardUsernamePasswordCredentials credentials = DescriptorImpl.lookupCredentials(build.getProject(),
 				credentialsId, restUrl);
@@ -136,10 +133,10 @@ public class CastRestAPIBuilder extends Builder {
 		listener.getLogger().println(String.format("AAD: %s", aad));
 		listener.getLogger().println(String.format("Application: %s", appId));
 
-		try {			
+		try {
 			int LastSnapshotId = CastRest.getLastSnapshotId(restUrl, credentials.getUsername(),
 					credentials.getPassword().getPlainText(), aad, getAppIdAsInteger(), false);
-			
+
 			int LastProdSnapshotId = CastRest.getLastSnapshotId(restUrl, credentials.getUsername(),
 					credentials.getPassword().getPlainText(), aad, getAppIdAsInteger(), true);
 
@@ -182,15 +179,13 @@ public class CastRestAPIBuilder extends Builder {
 							conditionMessage = "--> FAILED";
 							validateBuild = false;
 						}
-					}  else if (mcp.getOperatorName().equals("Change")) {
-						if (LastProdSnapshotId>0)
-						{
+					} else if (mcp.getOperatorName().equals("Change")) {
+						if (LastProdSnapshotId > 0) {
 							double prodMetricValue = CastRest.getMetric(restUrl, credentials.getUsername(),
-									credentials.getPassword().getPlainText(), aad, getAppIdAsInteger(), LastProdSnapshotId,
-									mcp.getMetricGroup(), mcp.getMetricId(), mcp.getMetricField());
-	
-							if (metricValue + mcp.getValueAsDouble() < prodMetricValue)
-							{
+									credentials.getPassword().getPlainText(), aad, getAppIdAsInteger(),
+									LastProdSnapshotId, mcp.getMetricGroup(), mcp.getMetricId(), mcp.getMetricField());
+
+							if (metricValue + mcp.getValueAsDouble() < prodMetricValue) {
 								conditionMessage = "--> FAILED";
 								validateBuild = false;
 							}
@@ -363,12 +358,15 @@ public class CastRestAPIBuilder extends Builder {
 
 			StandardUsernamePasswordCredentials credentials = lookupCredentials(context, credentialsId, restUrl);
 
-			int responseStatus = CastRest.listAads(restUrl, credentials.getUsername(),
-					credentials.getPassword().getPlainText(), Aads);
+			if (restUrl != null && credentials != null) {
 
-			if (responseStatus == 200) {
-				for (Aad aad : Aads) {
-					m.add(aad.getHref());
+				int responseStatus = CastRest.listAads(restUrl, credentials.getUsername(),
+						credentials.getPassword().getPlainText(), Aads);
+
+				if (responseStatus == 200) {
+					for (Aad aad : Aads) {
+						m.add(aad.getHref());
+					}
 				}
 			}
 			return m;
@@ -381,13 +379,15 @@ public class CastRestAPIBuilder extends Builder {
 
 			Collection<Application> apps = new ArrayList<Application>();
 			StandardUsernamePasswordCredentials credentials = lookupCredentials(context, credentialsId, restUrl);
+			if (restUrl != null && credentials != null) {
 
-			int responseStatus = CastRest.listApplications(restUrl, credentials.getUsername(),
-					credentials.getPassword().getPlainText(), aad, apps);
+				int responseStatus = CastRest.listApplications(restUrl, credentials.getUsername(),
+						credentials.getPassword().getPlainText(), aad, apps);
 
-			if (responseStatus == 200) {
-				for (Application app : apps) {
-					m.add(app.name, app.href.substring(app.href.lastIndexOf("/") + 1));
+				if (responseStatus == 200) {
+					for (Application app : apps) {
+						m.add(app.name, app.href.substring(app.href.lastIndexOf("/") + 1));
+					}
 				}
 			}
 			return m;
@@ -402,19 +402,21 @@ public class CastRestAPIBuilder extends Builder {
 			List<Metric> metrics = new ArrayList<Metric>();
 			StandardUsernamePasswordCredentials credentials = lookupCredentials(context, credentialsId, restUrl);
 
-			int responseStatus = CastRest.listMetricsForApp(restUrl, credentials.getUsername(),
-					credentials.getPassword().getPlainText(), aad, appId, metrics);
+			if (restUrl != null && credentials != null) {
+				int responseStatus = CastRest.listMetricsForApp(restUrl, credentials.getUsername(),
+						credentials.getPassword().getPlainText(), aad, appId, metrics);
 
-			if (responseStatus == 200) {
-				if (metrics.size() > 0) {
-					Collections.sort(metrics.get(0).applicationResults, new Comparator<ApplicationResult>() {
-						public int compare(ApplicationResult ar1, ApplicationResult ar2) {
-							return ar1.reference.name.compareTo(ar2.reference.name);
+				if (responseStatus == 200) {
+					if (metrics.size() > 0) {
+						Collections.sort(metrics.get(0).applicationResults, new Comparator<ApplicationResult>() {
+							public int compare(ApplicationResult ar1, ApplicationResult ar2) {
+								return ar1.reference.name.compareTo(ar2.reference.name);
+							}
+						});
+						for (ApplicationResult metric : metrics.get(0).applicationResults) {
+							m.add(String.format("%s (#%s)", metric.reference.name, metric.reference.key),
+									metric.reference.key);
 						}
-					});
-					for (ApplicationResult metric : metrics.get(0).applicationResults) {
-						m.add(String.format("%s (#%s)", metric.reference.name, metric.reference.key),
-								metric.reference.key);
 					}
 				}
 			}
@@ -430,56 +432,61 @@ public class CastRestAPIBuilder extends Builder {
 			try {
 				validationMessage.append("Look up credentials...\n");
 				StandardUsernamePasswordCredentials credentials = lookupCredentials(context, credentialsId, restUrl);
+				if (restUrl != null && credentials != null) {
 
-				int responseStatus;
+					int responseStatus;
 
-				boolean inError = false;
+					boolean inError = false;
 
-				for (String metricIdStr : metricIds.split(";")) {
-					int metricId;
-					try {
-						metricId = Integer.parseInt(metricIdStr);
-					} catch (NumberFormatException e) {
-						metricId = -1;
-					}
+					for (String metricIdStr : metricIds.split(";")) {
+						int metricId;
+						try {
+							metricId = Integer.parseInt(metricIdStr);
+						} catch (NumberFormatException e) {
+							metricId = -1;
+						}
 
-					if (metricId == -1) {
-						validationMessage.append(String.format("%s is not a valid metric Id\n", metricIdStr));
-						inError = true;
-					} else {
-						validationMessage.append(String.format("Checking metric %d...", metricId));
-						List<Metric> metrics = new ArrayList<Metric>();
-						responseStatus = CastRest.getMetricForApp(restUrl, credentials.getUsername(),
-								credentials.getPassword().getPlainText(), aad, appId, metricId, true, metrics);
-						if (responseStatus == 200) {
-							if (metrics.size() > 0 && metrics.get(0).applicationResults.size() > 0) {
-								try {
-									validationMessage.append(String.format("%d: %s (New Violations: %d)\n", metricId,
-											metrics.get(0).applicationResults.get(0).reference.name,
-											metrics.get(0).applicationResults
-													.get(0).result.evolutionSummary.addedViolations));
-								} catch (NullPointerException e) {
+						if (metricId == -1) {
+							validationMessage.append(String.format("%s is not a valid metric Id\n", metricIdStr));
+							inError = true;
+						} else {
+							validationMessage.append(String.format("Checking metric %d...", metricId));
+							List<Metric> metrics = new ArrayList<Metric>();
+							responseStatus = CastRest.getMetricForApp(restUrl, credentials.getUsername(),
+									credentials.getPassword().getPlainText(), aad, appId, metricId, true, metrics);
+							if (responseStatus == 200) {
+								if (metrics.size() > 0 && metrics.get(0).applicationResults.size() > 0) {
+									try {
+										validationMessage.append(String.format("%d: %s (New Violations: %d)\n",
+												metricId, metrics.get(0).applicationResults.get(0).reference.name,
+												metrics.get(0).applicationResults
+														.get(0).result.evolutionSummary.addedViolations));
+									} catch (NullPointerException e) {
+										validationMessage.append(
+												"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.\n");
+										inError = true;
+									}
+								} else {
 									validationMessage.append(
-											"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.\n");
+											String.format("Metric Id %d is invalid for this application\n", metricId));
 									inError = true;
 								}
 							} else {
 								validationMessage.append(
-										String.format("Metric Id %d is invalid for this application\n", metricId));
+										String.format("Unexpected response code from Rest API: %d\n", responseStatus));
 								inError = true;
 							}
-						} else {
-							validationMessage.append(
-									String.format("Unexpected response code from Rest API: %d\n", responseStatus));
-							inError = true;
 						}
 					}
-				}
 
-				if (inError)
-					return FormValidation.error(validationMessage.toString());
-				else
-					return FormValidation.ok(validationMessage.toString());
+					if (inError)
+						return FormValidation.error(validationMessage.toString());
+					else
+						return FormValidation.ok(validationMessage.toString());
+				} else {
+					return FormValidation
+							.error("REST API Required");					
+				}
 			} catch (Exception e) {
 				return FormValidation
 						.error(String.format("Exception: %s\n%s", e.getMessage(), validationMessage.toString()));
