@@ -3,7 +3,15 @@ package com.castsoftware.restapi.pojo;
 import java.util.Date;
 
 public class JsonDate {
-    public long time;
+    private long time;
     
-    public Date getAsDate() {return new Date(time);}
+    public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
+	}
+
+	public Date getAsDate() {return new Date(time);}
 }

@@ -2,12 +2,13 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>com.castsoftware.uc.castSLA</id>
-        <version>3.2.0</version>
+        <version>1.4.0</version>
         <title>CAST SLA Jenkins Plugin</title>
         <authors>User Community</authors>
         <owners>CAST</owners>
         <licenseUrl>http://www.castsoftware.com/ps/doc/extension/license</licenseUrl>
         <projectUrl>https://github.com/CAST-Extend/com.castsoftware.uc.castSLA</projectUrl>
+		<releaseNotes>https://github.com/CAST-Extend/com.castsoftware.uc.castSLA/wiki#release-history</releaseNotes>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>The CastSLA Jenkins plugin will terminate the job in the event that specific criteria is not met.  </description>
         <tags>Tools AIP Jenkins gatekeeper, sla</tags>

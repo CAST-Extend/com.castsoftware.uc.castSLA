@@ -19,7 +19,7 @@ public class Snapshot implements Comparable<Snapshot>{
 	public SimpleReference transactions;	
 
 	public int compareTo(Snapshot o) {
-		return o.annotation.date.getAsDate().compareTo(annotation.date.getAsDate());
+		return o.annotation.getDate().getAsDate().compareTo(annotation.getDate().getAsDate());
 	}
 
 	public String getHref() {

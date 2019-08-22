@@ -215,16 +215,16 @@ public class CastRestAPIBuilder extends Builder {
 								metrics);
 
 						if (responseStatus == 200) {
-							if (metrics.size() > 0 && metrics.get(0).applicationResults.size() > 0) {
+							if (metrics.size() > 0 && metrics.get(0).getApplicationResults().size() > 0) {
 								try {
-									if (metrics.get(0).applicationResults
-											.get(0).result.evolutionSummary.addedViolations > 0)
+									if (metrics.get(0).getApplicationResults()
+											.get(0).getResult().evolutionSummary.getAddedViolations() > 0)
 										validateBuild = false;
 									listener.getLogger()
 											.println(String.format("%d: %s (New Violations: %d)\n", metricId,
-													metrics.get(0).applicationResults.get(0).reference.name,
-													metrics.get(0).applicationResults
-															.get(0).result.evolutionSummary.addedViolations));
+													metrics.get(0).getApplicationResults().get(0).getReference().name,
+													metrics.get(0).getApplicationResults()
+															.get(0).getResult().evolutionSummary.getAddedViolations()));
 								} catch (NullPointerException e) {
 									listener.getLogger().println(
 											"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.");
@@ -261,8 +261,9 @@ public class CastRestAPIBuilder extends Builder {
 	 * <tt>src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
 	 * for the actual HTML fragment for the configuration screen.
 	 */
-	@Extension // This indicates to Jenkins that this is an implementation of an
-				// extension point.
+	@Extension 
+	// This indicates to Jenkins that this is an implementation of an
+	// extension point.
 	public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 		/**
 		 * To persist global configuration information, simply store it in a
@@ -386,7 +387,7 @@ public class CastRestAPIBuilder extends Builder {
 
 				if (responseStatus == 200) {
 					for (Application app : apps) {
-						m.add(app.name, app.href.substring(app.href.lastIndexOf("/") + 1));
+						m.add(app.getName(), app.getHref().substring(app.getHref().lastIndexOf("/") + 1));
 					}
 				}
 			}
@@ -408,14 +409,14 @@ public class CastRestAPIBuilder extends Builder {
 
 				if (responseStatus == 200) {
 					if (metrics.size() > 0) {
-						Collections.sort(metrics.get(0).applicationResults, new Comparator<ApplicationResult>() {
+						Collections.sort(metrics.get(0).getApplicationResults(), new Comparator<ApplicationResult>() {
 							public int compare(ApplicationResult ar1, ApplicationResult ar2) {
-								return ar1.reference.name.compareTo(ar2.reference.name);
+								return ar1.getReference().name.compareTo(ar2.getReference().name);
 							}
 						});
-						for (ApplicationResult metric : metrics.get(0).applicationResults) {
-							m.add(String.format("%s (#%s)", metric.reference.name, metric.reference.key),
-									metric.reference.key);
+						for (ApplicationResult metric : metrics.get(0).getApplicationResults()) {
+							m.add(String.format("%s (#%s)", metric.getReference().name, metric.getReference().key),
+									metric.getReference().key);
 						}
 					}
 				}
@@ -455,12 +456,12 @@ public class CastRestAPIBuilder extends Builder {
 							responseStatus = CastRest.getMetricForApp(restUrl, credentials.getUsername(),
 									credentials.getPassword().getPlainText(), aad, appId, metricId, true, metrics);
 							if (responseStatus == 200) {
-								if (metrics.size() > 0 && metrics.get(0).applicationResults.size() > 0) {
+								if (metrics.size() > 0 && metrics.get(0).getApplicationResults().size() > 0) {
 									try {
 										validationMessage.append(String.format("%d: %s (New Violations: %d)\n",
-												metricId, metrics.get(0).applicationResults.get(0).reference.name,
-												metrics.get(0).applicationResults
-														.get(0).result.evolutionSummary.addedViolations));
+												metricId, metrics.get(0).getApplicationResults().get(0).getReference().name,
+												metrics.get(0).getApplicationResults()
+														.get(0).getResult().evolutionSummary.getAddedViolations()));
 									} catch (NullPointerException e) {
 										validationMessage.append(
 												"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.\n");

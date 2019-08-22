@@ -137,12 +137,12 @@ public class CastRest {
 			
 			if (metrics.size() == 1)
 			{
-				if (metrics.iterator().next().applicationResults.size() == 1)
+				if (metrics.iterator().next().getApplicationResults().size() == 1)
 				{
 					if (metricField.equals("grade"))
-						rslt = metrics.iterator().next().applicationResults.iterator().next().result.grade;
+						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().grade;
 					else if (metricField.equals("value"))
-						rslt = metrics.iterator().next().applicationResults.iterator().next().result.value;
+						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().value;
 //					else
 //						throw new RestException(String.format("Unsupported data field (%s)!\n%s", metricField, queryString));
 				}
@@ -241,7 +241,7 @@ public class CastRest {
 			
 			Application app = gson.fromJson(jsonResponse.getJsonString(), Application.class);
 			
-			return app.name;
+			return app.getName();
 		}
 		else
 		{
@@ -260,8 +260,8 @@ public class CastRest {
     	
     	for (Application app : apps) 
         {
-        	if (app.name.equals(appName) )
-        		return Integer.parseInt(app.href.substring(app.href.lastIndexOf("/") + 1));
+        	if (app.getName().equals(appName) )
+        		return Integer.parseInt(app.getHref().substring(app.getHref().lastIndexOf("/") + 1));
         }
 		
 		return -1;
@@ -306,7 +306,7 @@ public class CastRest {
 	public static String getPenultimateSnapshotVersion(String webServiceAddress, String login, String password, String aad,
 			int appId) throws RestException
 	{
-		return getPenultimateSnapshot(webServiceAddress, login, password, aad, appId).annotation.version;
+		return getPenultimateSnapshot(webServiceAddress, login, password, aad, appId).annotation.getVersion();
 	}
 	
 	private static Snapshot getLastSnapshot(String webServiceAddress, String login, String password, String aad,
@@ -335,7 +335,7 @@ public class CastRest {
 					latestSnapshot = s;
 				else 
 				{
-					if (latestSnapshot.annotation.date.time < s.annotation.date.time)
+					if (latestSnapshot.annotation.getDate().getTime() < s.annotation.getDate().getTime())
 						latestSnapshot = s;
 				}								
 			}
@@ -366,7 +366,7 @@ public class CastRest {
 	{
 		Snapshot s = getLastSnapshot(webServiceAddress, login, password, aad, appId,prodOnly);
 		if (s!=null) {
-			return s.annotation.version;
+			return s.annotation.getVersion();
 		} else {
 			return "";
 		}

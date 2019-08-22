@@ -1,10 +1,10 @@
 package com.castsoftware.restapi.pojo;
 
 public class Annotation {
-	public String version;
-	public JsonDate date;
-	public String descriptions;
-	public String name;
+	private String version;
+	private JsonDate date;
+	private String descriptions;
+	private String name;
 	public String getVersion() {
 		return version;
 	}

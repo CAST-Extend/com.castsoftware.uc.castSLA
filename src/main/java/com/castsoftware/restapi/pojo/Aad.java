@@ -1,17 +1,19 @@
 package com.castsoftware.restapi.pojo;
 
+
 public class Aad {
-	public String href;
-	public String name;
-	public String dbType;
-	public String version;
-	public String dbmsVersion;
-	public SimpleReference systems;
-	public SimpleReference applications;
-	public SimpleReference configurations;
-	public SimpleReference results;
-	public SimpleReference commonCategories;
-	public SimpleReference tags;
+	private String href;
+	private String name;
+	private String dbType;
+	private String version;
+	private String dbmsVersion;
+	private SimpleReference systems;
+	private SimpleReference applications;
+	private SimpleReference configurations;
+	private SimpleReference results;
+	private SimpleReference commonCategories;
+	private SimpleReference tags;
+
 	public String getHref() {
 		return href;
 	}
@@ -78,6 +80,7 @@ public class Aad {
 	public void setTags(SimpleReference tags) {
 		this.tags = tags;
 	}
+
 	
 	
 }
