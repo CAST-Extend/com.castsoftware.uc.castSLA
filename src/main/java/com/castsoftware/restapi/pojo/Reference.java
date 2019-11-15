@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Reference {
-    public String href;
-    public String name;
-    public String shortName;
-    public String key;
-    public String gradeAggregators;
+    private String href;
+    private String name;
+    private String shortName;
+    private String key;
+    private String gradeAggregators;
 }

@@ -1,8 +1,13 @@
 package com.castsoftware.restapi.pojo;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Result {
-	public Double value;
-    public Double grade;
-    public EvolutionSummary evolutionSummary;
-    public String boundaries;
+    private Double value;
+    private Double grade;
+    private EvolutionSummary evolutionSummary;
+    private String boundaries;
 }
