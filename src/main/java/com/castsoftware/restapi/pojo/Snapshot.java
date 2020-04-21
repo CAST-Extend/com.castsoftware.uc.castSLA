@@ -3,20 +3,20 @@ package com.castsoftware.restapi.pojo;
 import java.util.List;
 
 public class Snapshot implements Comparable<Snapshot>{
-	public String href;
-	public String name;
-	public String number;
+	private String href;
+	private String name;
+	private String number;
 	
-	public List<String> technologies;
-	public Annotation annotation;
-	public SimpleReference configurationSnapshot;
-	public SimpleReference systems;
-	public Application application;
-	public SimpleReference moduleSnapshots;
-	public SimpleReference results;
-	public ActionPlan actionPlan;
-	public SimpleReference components;
-	public SimpleReference transactions;	
+	private List<String> technologies;
+	private Annotation annotation;
+	private SimpleReference configurationSnapshot;
+	private SimpleReference systems;
+	private Application application;
+	private SimpleReference moduleSnapshots;
+	private SimpleReference results;
+	private ActionPlan actionPlan;
+	private SimpleReference components;
+	private SimpleReference transactions;	
 
 	public int compareTo(Snapshot o) {
 		return o.annotation.getDate().getAsDate().compareTo(annotation.getDate().getAsDate());
