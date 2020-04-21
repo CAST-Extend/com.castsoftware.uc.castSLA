@@ -218,13 +218,13 @@ public class CastRestAPIBuilder extends Builder {
 							if (metrics.size() > 0 && metrics.get(0).getApplicationResults().size() > 0) {
 								try {
 									if (metrics.get(0).getApplicationResults()
-											.get(0).getResult().evolutionSummary.getAddedViolations() > 0)
+											.get(0).getResult().getEvolutionSummary().getAddedViolations() > 0)
 										validateBuild = false;
 									listener.getLogger()
 											.println(String.format("%d: %s (New Violations: %d)\n", metricId,
-													metrics.get(0).getApplicationResults().get(0).getReference().name,
+													metrics.get(0).getApplicationResults().get(0).getReference().getName(),
 													metrics.get(0).getApplicationResults()
-															.get(0).getResult().evolutionSummary.getAddedViolations()));
+															.get(0).getResult().getEvolutionSummary().getAddedViolations()));
 								} catch (NullPointerException e) {
 									listener.getLogger().println(
 											"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.");
@@ -411,12 +411,12 @@ public class CastRestAPIBuilder extends Builder {
 					if (metrics.size() > 0) {
 						Collections.sort(metrics.get(0).getApplicationResults(), new Comparator<ApplicationResult>() {
 							public int compare(ApplicationResult ar1, ApplicationResult ar2) {
-								return ar1.getReference().name.compareTo(ar2.getReference().name);
+								return ar1.getReference().getName().compareTo(ar2.getReference().getName());
 							}
 						});
 						for (ApplicationResult metric : metrics.get(0).getApplicationResults()) {
-							m.add(String.format("%s (#%s)", metric.getReference().name, metric.getReference().key),
-									metric.getReference().key);
+							m.add(String.format("%s (#%s)", metric.getReference().getName(), metric.getReference().getKey()),
+									metric.getReference().getKey());
 						}
 					}
 				}
@@ -459,9 +459,9 @@ public class CastRestAPIBuilder extends Builder {
 								if (metrics.size() > 0 && metrics.get(0).getApplicationResults().size() > 0) {
 									try {
 										validationMessage.append(String.format("%d: %s (New Violations: %d)\n",
-												metricId, metrics.get(0).getApplicationResults().get(0).getReference().name,
+												metricId, metrics.get(0).getApplicationResults().get(0).getReference().getName(),
 												metrics.get(0).getApplicationResults()
-														.get(0).getResult().evolutionSummary.getAddedViolations()));
+														.get(0).getResult().getEvolutionSummary().getAddedViolations()));
 									} catch (NullPointerException e) {
 										validationMessage.append(
 												"JSON stream is missing 'evolutionSummary' information. CAST Rest API 8.2.x or superior needed.\n");

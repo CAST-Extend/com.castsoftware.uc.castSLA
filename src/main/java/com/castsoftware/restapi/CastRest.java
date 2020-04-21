@@ -140,9 +140,9 @@ public class CastRest {
 				if (metrics.iterator().next().getApplicationResults().size() == 1)
 				{
 					if (metricField.equals("grade"))
-						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().grade;
+						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().getGrade();
 					else if (metricField.equals("value"))
-						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().value;
+						rslt = metrics.iterator().next().getApplicationResults().iterator().next().getResult().getValue();
 //					else
 //						throw new RestException(String.format("Unsupported data field (%s)!\n%s", metricField, queryString));
 				}
